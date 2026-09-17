@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Caption Studio</title>
+
+  <style>
+    :root {
+      --bg: #f3f4f6;
+      --card: #ffffff;
+      --border: #dfe3e8;
+      --text: #20242b;
+      --muted: #707782;
+      --primary: #ff4d14;
+      --dark: #181b20;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 230px 1fr;
+    }
+
+    aside {
+      padding: 24px 16px;
+      background: var(--dark);
+      color: white;
+    }
+
+    .logo {
+      margin: 0 10px 35px;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .logo span {
+      color: var(--primary);
+    }
+
+    .nav {
+      display: grid;
+      gap: 8px;
+    }
+
+    .nav button {
+      width: 100%;
+      border: 0;
+      border-radius: 8px;
+      padding: 13px;
+      color: #c5cad2;
+      background: transparent;
+      text-align: left;
+    }
+
+    .nav button:hover,
+    .nav button.active {
+      color: white;
+      background: #30343d;
+    }
+
+    main {
+      min-width: 0;
+    }
+
+    header {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 15px 30px;
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 21px;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+    }
+
+    .content {
+      max-width: 1450px;
+      margin: auto;
+      padding: 28px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 20px;
+    }
+
+    .editor {
+      display: grid;
+      grid-template-columns: minmax(450px, 1fr) 330px;
+      gap: 18px;
+    }
+
+    .preview-area {
+      min-height: 470px;
+      display: grid;
+      place-items: center;
+      padding: 22px;
+      border-radius: 10px;
+      background: #20242b;
+    }
+
+    .video-wrap {
+      position: relative;
+      width: min(100%, 720px);
+      background: #000;
+    }
+
+    video {
+      display: block;
+      width: 100%;
+      max-height: 520px;
+      background: #000;
+    }
+
+    .caption {
+      position: absolute;
+      right: 5%;
+      bottom: 8%;
+      left: 5%;
+      color: white;
+      font-size: 34px;
+      font-weight: 800;
+      line-height: 1.08;
+      text-align: center;
+      text-shadow: 2px 3px 0 #111;
+      pointer-events: none;
+    }
+
+    .caption .active-word {
+      color: #ffd21f;
+    }
+
+    .transport {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .progress {
+      flex: 1;
+      accent-color: var(--primary);
+    }
+
+    .timeline {
+      margin-top: 18px;
+      overflow-x: auto;
+    }
+
+    .timeline-track {
+      display: flex;
+      gap: 6px;
+      min-height: 60px;
+    }
+
+    .timeline-item {
+      min-width: 130px;
+      padding: 9px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #eef0f3;
+      font-size: 12px;
+      text-align: left;
+    }
+
+    .timeline-item.active {
+      color: white;
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .timeline-item small {
+      display: block;
+      margin-top: 7px;
+      opacity: .75;
+    }
+
+    .panel {
+      display: grid;
+      align-content: start;
+      gap: 18px;
+    }
+
+    .section {
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section:last-child {
+      border-bottom: 0;
+    }
+
+    .label {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .input,
+    select,
+    textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px;
+      background: white;
+      color: var(--text);
+    }
+
+    textarea {
+      min-height: 86px;
+      resize: vertical;
+    }
+
+    .row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+      margin-top: 10px;
+    }
+
+    .btn {
+      border: 0;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-weight: bold;
+    }
+
+    .btn-primary {
+      color: white;
+      background: var(--primary);
+    }
+
+    .btn-secondary {
+      color: var(--text);
+      background: white;
+      border: 1px solid var(--border);
+    }
+
+    .btn-dark {
+      color: white;
+      background: var(--dark);
+    }
+
+    .style-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .style {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 11px 7px;
+      background: white;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .style.selected {
+      color: var(--primary);
+      border-color: var(--primary);
+      background: #fff1ec;
+    }
+
+    .font-list {
+      display: grid;
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .font-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      padding: 9px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 13px;
+    }
+
+    .font-item button {
+      border: 0;
+      border-radius: 5px;
+      padding: 5px 8px;
+      color: white;
+      background: var(--dark);
+      font-size: 11px;
+    }
+
+    .status {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .empty {
+      padding: 30px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      .app {
+        grid-template-columns: 1fr;
+      }
+
+      aside {
+        display: none;
+      }
+
+      .editor {
+        grid-template-columns: 1fr;
+      }
+
+      .content {
+        padding: 16px;
+      }
+
+      header {
+        padding: 14px 16px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="app">
+    <aside>
+      <div class="logo">Caption<span>Studio</span></div>
+
+      <nav class="nav">
+        <button class="active">Editor</button>
+        <button onclick="showFonts()">Biblioteca de fontes</button>
+        <button onclick="saveProject()">Salvar projeto</button>
+      </nav>
+    </aside>
+
+    <main>
+      <header>
+        <h1>Editor de legendas</h1>
+
+        <div class="header-actions">
+          <label class="btn btn-secondary">
+            Carregar vídeo
+            <input id="videoInput" type="file" accept="video/*" hidden>
+          </label>
+
+          <button class="btn btn-secondary" onclick="downloadSRT()">
+            Baixar SRT
+          </button>
+
+          <button class="btn btn-primary" onclick="saveProject()">
+            Salvar
+          </button>
+        </div>
+      </header>
+
+      <div class="content">
+        <div class="editor">
+          <section class="card">
+            <div class="preview-area">
+              <div class="video-wrap">
+                <video id="video" controls></video>
+                <div id="caption" class="caption">
+                  Carregue um vídeo para começar
+                </div>
+              </div>
+            </div>
+
+            <div class="transport">
+              <button id="playButton" class="btn btn-dark">Reproduzir</button>
+              <input id="progress" class="progress" type="range" min="0" max="100" value="0">
+              <span id="time">00:00</span>
+            </div>
+
+            <div class="timeline">
+              <span class="label">Timeline de legendas</span>
+              <div id="timelineTrack" class="timeline-track"></div>
+            </div>
+
+            <div class="section" style="margin-top: 18px;">
+              <span class="label">Legenda selecionada</span>
+
+              <textarea id="captionText"></textarea>
+
+              <div class="row">
+                <div>
+                  <span class="label">Início</span>
+                  <input id="startTime" class="input" type="number" min="0" step="0.1">
+                </div>
+
+                <div>
+                  <span class="label">Fim</span>
+                  <input id="endTime" class="input" type="number" min="0" step="0.1">
+                </div>
+              </div>
+
+              <button class="btn btn-primary" style="margin-top: 10px;" onclick="applyCaption()">
+                Aplicar alteração
+              </button>
+            </div>
+
+            <div id="status" class="status">
+              Nenhum vídeo carregado.
+            </div>
+          </section>
+
+          <aside class="card panel">
+            <div class="section">
+              <span class="label">Formato do preview</span>
+
+              <select id="aspectRatio" onchange="changeAspectRatio()">
+                <option value="horizontal">Horizontal 16:9</option>
+                <option value="vertical">Vertical 9:16</option>
+              </select>
+            </div>
+
+            <div class="section">
+              <span class="label">Estilo da legenda</span>
+
+              <div class="style-grid">
+                <button class="style selected" data-style="clean">Clean</button>
+                <button class="style" data-style="highlight">Highlight</button>
+                <button class="style" data-style="karaoke">Karaokê</button>
+                <button class="style" data-style="impact">Impacto</button>
+                <button class="style" data-style="social">Social</button>
+                <button class="style" data-style="brand">Brand</button>
+              </div>
+            </div>
+
+            <div class="section">
+              <span class="label">Tipografia</span>
+
+              <select id="fontSelect" onchange="changeFont()">
+                <option value="Arial">Arial</option>
+                <option value="Verdana">Verdana</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Impact">Impact</option>
+              </select>
+
+              <div class="row">
+                <select id="fontWeight" onchange="changeFont()">
+                  <option value="400">Regular</option>
+                  <option value="700" selected>Bold</option>
+                  <option value="900">Black</option>
+                </select>
+
+                <select id="fontSize" onchange="changeFont()">
+                  <option value="24">24 px</option>
+                  <option value="34" selected>34 px</option>
+                  <option value="48">48 px</option>
+                  <option value="64">64 px</option>
+                </select>
+              </div>
+
+              <div class="row">
+                <input id="textColor" type="color" value="#ffffff" onchange="changeFont()">
+                <input id="activeColor" type="color" value="#ffd21f" onchange="changeFont()">
+              </div>
+            </div>
+
+            <div class="section">
+              <span class="label">Fonte do cliente</span>
+
+              <input id="fontFile" class="input" type="file" accept=".ttf,.otf,.woff,.woff2">
+
+              <div id="fontList" class="font-list"></div>
+            </div>
+
+            <div class="section">
+              <span class="label">Idioma</span>
+
+              <select id="language">
+                <option value="pt">Português</option>
+                <option value="en">Inglês</option>
+                <option value="es">Espanhol</option>
+              </select>
+
+              <p class="status">
+                A transcrição automática será conectada na próxima versão.
+              </p>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    const video = document.getElementById("video");
+    const caption = document.getElementById("caption");
+    const progress = document.getElementById("progress");
+    const timeLabel = document.getElementById("time");
+    const playButton = document.getElementById("playButton");
+    const timelineTrack = document.getElementById("timelineTrack");
+    const captionText = document.getElementById("captionText");
+    const startTime = document.getElementById("startTime");
+    const endTime = document.getElementById("endTime");
+    const statusText = document.getElementById("status");
+    const fontList = document.getElementById("fontList");
+
+    let selectedCaption = 0;
+    let selectedStyle = "clean";
+    let videoUrl = "";
+
+    let captions = [
+      {
+        text: "Essa é a sua nova campanha",
+        start: 0,
+        end: 2.4
+      },
+      {
+        text: "Feita para chamar atenção",
+        start: 2.4,
+        end: 5.5
+      },
+      {
+        text: "Conheça agora",
+        start: 5.5,
+        end: 8
+      }
+    ];
+
+    function formatTime(seconds) {
+      seconds = Math.max(0, Number(seconds) || 0);
+      const minutes = Math.floor(seconds / 60);
+      const secs = Math.floor(seconds % 60);
+
+      return String(minutes).padStart(2, "0") + ":" +
+        String(secs).padStart(2, "0");
+    }
+
+    function renderTimeline() {
+      timelineTrack.innerHTML = "";
+
+      captions.forEach((item, index) => {
+        const button = document.createElement("button");
+        button.className = "timeline-item";
+        button.textContent = item.text;
+
+        const small = document.createElement("small");
+        small.textContent = formatTime(item.start) + " até " + formatTime(item.end);
+
+        button.appendChild(small);
+
+        if (index === selectedCaption) {
+          button.classList.add("active");
+        }
+
+        button.onclick = () => {
+          selectedCaption = index;
+          loadSelectedCaption();
+          renderTimeline();
+          video.currentTime = captions[index].start;
+        };
+
+        timelineTrack.appendChild(button);
+      });
+    }
+
+    function loadSelectedCaption() {
+      const item = captions[selectedCaption];
+
+      captionText.value = item.text;
+      startTime.value = item.start;
+      endTime.value = item.end;
+    }
+
+    function applyCaption() {
+      const item = captions[selectedCaption];
+
+      item.text = captionText.value;
+      item.start = Number(startTime.value);
+      item.end = Number(endTime.value);
+
+      if (item.end <= item.start) {
+        alert("O tempo final precisa ser maior que o tempo inicial.");
+        return;
+      }
+
+      renderTimeline();
+      updateCaption();
+      saveProject();
+    }
+
+    function updateCaption() {
+      const currentTime = video.currentTime || 0;
+
+      const activeIndex = captions.findIndex(item => {
+        return currentTime >= item.start && currentTime <= item.end;
+      });
+
+      document.querySelectorAll(".timeline-item").forEach((item, index) => {
+        item.classList.toggle("active", index === activeIndex);
+      });
+
+      if (activeIndex === -1) {
+        caption.textContent = "";
+        return;
+      }
+
+      const text = captions[activeIndex].text;
+
+      if (selectedStyle === "highlight" || selectedStyle === "karaoke") {
+        const words = text.split(" ");
+        const progressRatio =
+          (currentTime - captions[activeIndex].start) /
+          (captions[activeIndex].end - captions[activeIndex].start);
+
+        const activeWord = Math.min(
+          words.length - 1,
+          Math.floor(progressRatio * words.length)
+        );
+
+        caption.innerHTML = words.map((word, index) => {
+          return index === activeWord
+            ? "<span class='active-word'>" + word + "</span>"
+            : word;
+        }).join(" ");
+      } else {
+        caption.textContent = text;
+      }
+    }
+
+    function applyStyle(style) {
+      selectedStyle = style;
+
+      document.querySelectorAll(".style").forEach(button => {
+        button.classList.toggle(
+          "selected",
+          button.dataset.style === style
+        );
+      });
+
+      caption.style.textTransform = style === "social"
+        ? "uppercase"
+        : "none";
+
+      caption.style.fontSize = style === "impact"
+        ? "48px"
+        : "34px";
+
+      caption.style.background = style === "social"
+        ? "rgba(255, 77, 20, .9)"
+        : "transparent";
+
+      caption.style.padding = style === "social"
+        ? "8px 12px"
+        : "0";
+
+      updateCaption();
+    }
+
+    function changeFont() {
+      caption.style.fontFamily =
+        document.getElementById("fontSelect").value;
+
+      caption.style.fontWeight =
+        document.getElementById("fontWeight").value;
+
+      caption.style.fontSize =
+        document.getElementById("fontSize").value + "px";
+
+      caption.style.color =
+        document.getElementById("textColor").value;
+
+      document.documentElement.style.setProperty(
+        "--active-color",
+        document.getElementById("activeColor").value
+      );
+    }
+
+    function changeAspectRatio() {
+      const ratio = document.getElementById("aspectRatio").value;
+
+      video.style.aspectRatio = ratio === "vertical"
+        ? "9 / 16"
+        : "16 / 9";
+
+      video.style.objectFit = "contain";
+    }
+
+    function showFonts() {
+      alert("A biblioteca de fontes está disponível no painel lateral.");
+    }
+
+    function saveProject() {
+      const project = {
+        captions,
+        selectedStyle,
+        selectedCaption,
+        language: document.getElementById("language").value,
+        aspectRatio: document.getElementById("aspectRatio").value,
+        font: document.getElementById("fontSelect").value,
+        savedAt: new Date().toISOString()
+      };
+
+      localStorage.setItem(
+        "caption-studio-project",
+        JSON.stringify(project)
+      );
+
+      statusText.textContent =
+        "Projeto salvo neste navegador.";
+    }
+
+    function loadProject() {
+      const saved = localStorage.getItem("caption-studio-project");
+
+      if (!saved) {
+        renderTimeline();
+        loadSelectedCaption();
+        return;
+      }
+
+      try {
+        const project = JSON.parse(saved);
+
+        captions = project.captions || captions;
+        selectedStyle = project.selectedStyle || "clean";
+        selectedCaption = project.selectedCaption || 0;
+
+        document.getElementById("language").value =
+          project.language || "pt";
+
+        document.getElementById("aspectRatio").value =
+          project.aspectRatio || "horizontal";
+
+        document.getElementById("fontSelect").value =
+          project.font || "Arial";
+
+        renderTimeline();
+        loadSelectedCaption();
+        applyStyle(selectedStyle);
+        changeFont();
+        changeAspectRatio();
+
+        statusText.textContent =
+          "Projeto recuperado do armazenamento local.";
+      } catch {
+        renderTimeline();
+        loadSelectedCaption();
+      }
+    }
+
+    function toSRTTime(seconds) {
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const secs = Math.floor(seconds % 60);
+      const ms = Math.floor((seconds % 1) * 1000);
+
+      return [
+        String(hours).padStart(2, "0"),
+        String(minutes).padStart(2, "0"),
+        String(secs).padStart(2, "0")
+      ].join(":") + "," + String(ms).padStart(3, "0");
+    }
+
+    function downloadSRT() {
+      const content = captions.map((item, index) => {
+        return [
+          index + 1,
+          toSRTTime(item.start) + " --> " + toSRTTime(item.end),
+          item.text,
+          ""
+        ].join("\n");
+      }).join("\n");
+
+      const blob = new Blob([content], {
+        type: "text/plain;charset=utf-8"
+      });
+
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = "legendas.srt";
+      link.click();
+
+      URL.revokeObjectURL(link.href);
+    }
+
+    document.getElementById("videoInput").addEventListener("change", event => {
+      const file = event.target.files[0];
+
+      if (!file) {
+        return;
+      }
+
+      if (videoUrl) {
+        URL.revokeObjectURL(videoUrl);
+      }
+
+      videoUrl = URL.createObjectURL(file);
+      video.src = videoUrl;
+      statusText.textContent = "Vídeo carregado: " + file.name;
+    });
+
+    document.getElementById("fontFile").addEventListener("change", event => {
+      const file = event.target.files[0];
+
+      if (!file) {
+        return;
+      }
+
+      const fontName = "ClientFont" + Date.now();
+      const fontUrl = URL.createObjectURL(file);
+
+      const style = document.createElement("style");
+      style.textContent =
+        "@font-face { font-family: '" + fontName + "'; src: url('" +
+        fontUrl + "'); }";
+
+      document.head.appendChild(style);
+
+      const option = document.createElement("option");
+      option.value = fontName;
+      option.textContent = file.name;
+
+      document.getElementById("fontSelect").appendChild(option);
+      document.getElementById("fontSelect").value = fontName;
+
+      changeFont();
+
+      const item = document.createElement("div");
+      item.className = "font-item";
+      item.innerHTML =
+        "<span>" + file.name + "</span><small>Carregada localmente</small>";
+
+      fontList.appendChild(item);
+
+      statusText.textContent =
+        "Fonte carregada apenas neste navegador.";
+    });
+
+    playButton.addEventListener("click", () => {
+      if (video.paused) {
+        video.play();
+        playButton.textContent = "Pausar";
+      } else {
+        video.pause();
+        playButton.textContent = "Reproduzir";
+      }
+    });
+
+    video.addEventListener("timeupdate", () => {
+      if (video.duration) {
+        progress.value = (video.currentTime / video.duration) * 100;
+      }
+
+      timeLabel.textContent = formatTime(video.currentTime);
+      updateCaption();
+    });
+
+    progress.addEventListener("input", () => {
+      if (video.duration) {
+        video.currentTime =
+          (Number(progress.value) / 100) * video.duration;
+      }
+    });
+
+    document.querySelectorAll(".style").forEach(button => {
+      button.addEventListener("click", () => {
+        applyStyle(button.dataset.style);
+      });
+    });
+
+    loadProject();
+  </script>
+</body>
+</html>
