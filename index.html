@@ -13,15 +13,24 @@
       --text: #20242b;
       --muted: #707782;
       --primary: #ff4d14;
+      --primary-dark: #d93d0d;
       --dark: #181b20;
+      --active-word: #ffd21f;
+      --danger: #c62828;
+      --success: #18864b;
     }
 
     * {
       box-sizing: border-box;
     }
 
+    html,
     body {
       margin: 0;
+      min-height: 100%;
+    }
+
+    body {
       background: var(--bg);
       color: var(--text);
       font-family: Arial, Helvetica, sans-serif;
@@ -38,22 +47,28 @@
       cursor: pointer;
     }
 
+    button:disabled {
+      cursor: wait;
+      opacity: 0.6;
+    }
+
     .app {
       min-height: 100vh;
       display: grid;
-      grid-template-columns: 230px 1fr;
+      grid-template-columns: 235px 1fr;
     }
 
-    aside {
+    .sidebar {
       padding: 24px 16px;
-      background: var(--dark);
       color: white;
+      background: var(--dark);
     }
 
     .logo {
       margin: 0 10px 35px;
       font-size: 22px;
-      font-weight: bold;
+      font-weight: 800;
+      letter-spacing: -0.5px;
     }
 
     .logo span {
@@ -65,65 +80,78 @@
       gap: 8px;
     }
 
-    .nav button {
+    .nav-button {
       width: 100%;
+      padding: 13px;
       border: 0;
       border-radius: 8px;
-      padding: 13px;
       color: #c5cad2;
       background: transparent;
       text-align: left;
     }
 
-    .nav button:hover,
-    .nav button.active {
+    .nav-button:hover,
+    .nav-button.active {
       color: white;
       background: #30343d;
     }
 
-    main {
+    .sidebar-note {
+      margin: 40px 10px 0;
+      color: #9fa5af;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .main {
       min-width: 0;
     }
 
-    header {
+    .topbar {
       min-height: 72px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 20px;
-      padding: 15px 30px;
+      padding: 14px 30px;
       background: var(--card);
       border-bottom: 1px solid var(--border);
     }
 
-    header h1 {
+    .topbar h1 {
       margin: 0;
       font-size: 21px;
     }
 
-    .header-actions {
+    .topbar-actions {
       display: flex;
-      gap: 9px;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
       flex-wrap: wrap;
     }
 
     .content {
-      max-width: 1450px;
-      margin: auto;
+      max-width: 1500px;
+      margin: 0 auto;
       padding: 28px;
     }
 
     .card {
-      background: var(--card);
+      padding: 20px;
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 20px;
+      background: var(--card);
     }
 
-    .editor {
+    .editor-layout {
       display: grid;
-      grid-template-columns: minmax(450px, 1fr) 330px;
+      grid-template-columns: minmax(450px, 1fr) 340px;
       gap: 18px;
+    }
+
+    .editor-main {
+      min-width: 0;
     }
 
     .preview-area {
@@ -137,18 +165,24 @@
 
     .video-wrap {
       position: relative;
-      width: min(100%, 720px);
-      background: #000;
+      width: min(100%, 760px);
+      background: #000000;
+      overflow: hidden;
     }
 
-    video {
+    .video-wrap.vertical {
+      width: min(100%, 310px);
+    }
+
+    .video {
       display: block;
       width: 100%;
-      max-height: 520px;
-      background: #000;
+      max-height: 530px;
+      background: #000000;
+      object-fit: contain;
     }
 
-    .caption {
+    .caption-overlay {
       position: absolute;
       right: 5%;
       bottom: 8%;
@@ -158,12 +192,46 @@
       font-weight: 800;
       line-height: 1.08;
       text-align: center;
-      text-shadow: 2px 3px 0 #111;
+      text-shadow: 2px 3px 0 #111111;
       pointer-events: none;
+      overflow-wrap: break-word;
     }
 
-    .caption .active-word {
-      color: #ffd21f;
+    .caption-overlay.style-social {
+      padding: 8px 12px;
+      border-radius: 6px;
+      background: rgba(255, 77, 20, 0.9);
+    }
+
+    .caption-overlay.style-impact {
+      font-size: 48px;
+      animation: caption-pulse 1s infinite alternate;
+    }
+
+    .caption-overlay.style-clean {
+      text-shadow: 2px 3px 0 #111111;
+    }
+
+    .caption-overlay.style-brand {
+      text-shadow: 2px 3px 0 #111111;
+    }
+
+    .caption-overlay.uppercase {
+      text-transform: uppercase;
+    }
+
+    .active-word {
+      color: var(--active-word);
+    }
+
+    @keyframes caption-pulse {
+      from {
+        transform: scale(1);
+      }
+
+      to {
+        transform: scale(1.04);
+      }
     }
 
     .transport {
@@ -178,37 +246,67 @@
       accent-color: var(--primary);
     }
 
+    .time-label {
+      min-width: 70px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: right;
+    }
+
     .timeline {
-      margin-top: 18px;
-      overflow-x: auto;
+      margin-top: 20px;
+      overflow: hidden;
     }
 
     .timeline-track {
       display: flex;
       gap: 6px;
-      min-height: 60px;
+      min-height: 68px;
+      overflow-x: auto;
+      padding-bottom: 6px;
     }
 
     .timeline-item {
-      min-width: 130px;
-      padding: 9px;
+      min-width: 145px;
+      padding: 10px;
       border: 1px solid var(--border);
       border-radius: 8px;
       background: #eef0f3;
-      font-size: 12px;
+      color: var(--text);
       text-align: left;
     }
 
-    .timeline-item.active {
-      color: white;
-      background: var(--primary);
+    .timeline-item:hover {
       border-color: var(--primary);
     }
 
-    .timeline-item small {
+    .timeline-item.active {
+      border-color: var(--primary);
+      color: white;
+      background: var(--primary);
+    }
+
+    .timeline-item-title {
       display: block;
-      margin-top: 7px;
-      opacity: .75;
+      max-width: 150px;
+      overflow: hidden;
+      font-size: 12px;
+      font-weight: 700;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .timeline-item-time {
+      display: block;
+      margin-top: 8px;
+      font-size: 10px;
+      opacity: 0.75;
+    }
+
+    .caption-editor {
+      margin-top: 20px;
+      padding-top: 18px;
+      border-top: 1px solid var(--border);
     }
 
     .panel {
@@ -223,6 +321,7 @@
     }
 
     .section:last-child {
+      padding-bottom: 0;
       border-bottom: 0;
     }
 
@@ -231,7 +330,8 @@
       margin-bottom: 8px;
       color: var(--muted);
       font-size: 12px;
-      font-weight: bold;
+      font-weight: 800;
+      letter-spacing: 0.4px;
       text-transform: uppercase;
     }
 
@@ -239,15 +339,15 @@
     select,
     textarea {
       width: 100%;
+      padding: 10px;
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 10px;
       background: white;
       color: var(--text);
     }
 
     textarea {
-      min-height: 86px;
+      min-height: 88px;
       resize: vertical;
     }
 
@@ -258,27 +358,36 @@
       margin-top: 10px;
     }
 
-    .btn {
+    .button {
+      padding: 10px 14px;
       border: 0;
       border-radius: 8px;
-      padding: 10px 14px;
-      font-weight: bold;
+      font-weight: 700;
     }
 
-    .btn-primary {
+    .button-primary {
       color: white;
       background: var(--primary);
     }
 
-    .btn-secondary {
+    .button-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .button-secondary {
       color: var(--text);
       background: white;
       border: 1px solid var(--border);
     }
 
-    .btn-dark {
+    .button-dark {
       color: white;
       background: var(--dark);
+    }
+
+    .button-danger {
+      color: white;
+      background: var(--danger);
     }
 
     .style-grid {
@@ -287,78 +396,130 @@
       gap: 8px;
     }
 
-    .style {
+    .style-button {
+      padding: 11px 7px;
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 11px 7px;
       background: white;
       font-size: 12px;
-      font-weight: bold;
+      font-weight: 700;
     }
 
-    .style.selected {
-      color: var(--primary);
+    .style-button:hover,
+    .style-button.selected {
       border-color: var(--primary);
+      color: var(--primary);
       background: #fff1ec;
     }
 
     .font-list {
       display: grid;
       gap: 7px;
+      max-height: 190px;
       margin-top: 10px;
+      overflow-y: auto;
     }
 
     .font-item {
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       gap: 8px;
       padding: 9px;
       border: 1px solid var(--border);
       border-radius: 8px;
-      font-size: 13px;
     }
 
-    .font-item button {
-      border: 0;
-      border-radius: 5px;
-      padding: 5px 8px;
-      color: white;
-      background: var(--dark);
-      font-size: 11px;
+    .font-item-name {
+      overflow: hidden;
+      font-size: 13px;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .font-item-status {
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: 10px;
     }
 
     .status {
-      margin-top: 12px;
+      min-height: 20px;
+      margin: 12px 0 0;
       color: var(--muted);
       font-size: 13px;
+      line-height: 1.45;
     }
 
-    .empty {
+    .status.success {
+      color: var(--success);
+    }
+
+    .status.error {
+      color: var(--danger);
+    }
+
+    .notice {
+      margin-top: 14px;
+      padding: 10px 12px;
+      border-left: 3px solid var(--primary);
+      border-radius: 5px;
+      background: #fff5f1;
+      color: #63301f;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .empty-state {
       padding: 30px;
       color: var(--muted);
       text-align: center;
     }
 
-    @media (max-width: 900px) {
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 980px) {
+      .editor-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
       .app {
-        grid-template-columns: 1fr;
+        display: block;
       }
 
-      aside {
+      .sidebar {
         display: none;
-      }
-
-      .editor {
-        grid-template-columns: 1fr;
       }
 
       .content {
         padding: 16px;
       }
 
-      header {
-        padding: 14px 16px;
+      .topbar {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 16px;
+      }
+
+      .topbar-actions {
+        justify-content: flex-start;
+      }
+
+      .preview-area {
+        min-height: 360px;
+        padding: 12px;
+      }
+
+      .caption-overlay {
+        font-size: 25px;
+      }
+
+      .caption-overlay.style-impact {
+        font-size: 34px;
       }
     }
   </style>
@@ -366,83 +527,178 @@
 
 <body>
   <div class="app">
-    <aside>
+    <aside class="sidebar">
       <div class="logo">Caption<span>Studio</span></div>
 
       <nav class="nav">
-        <button class="active">Editor</button>
-        <button onclick="showFonts()">Biblioteca de fontes</button>
-        <button onclick="saveProject()">Salvar projeto</button>
+        <button class="nav-button active" type="button">
+          Editor
+        </button>
+
+        <button class="nav-button" type="button" onclick="focusFontLibrary()">
+          Biblioteca de fontes
+        </button>
+
+        <button class="nav-button" type="button" onclick="saveProject()">
+          Salvar projeto
+        </button>
       </nav>
+
+      <div class="sidebar-note">
+        Versão local para testes.<br>
+        Os dados ficam salvos neste navegador.
+      </div>
     </aside>
 
-    <main>
-      <header>
+    <main class="main">
+      <header class="topbar">
         <h1>Editor de legendas</h1>
 
-        <div class="header-actions">
-          <label class="btn btn-secondary">
+        <div class="topbar-actions">
+          <label class="button button-secondary">
             Carregar vídeo
-            <input id="videoInput" type="file" accept="video/*" hidden>
+            <input
+              id="videoInput"
+              type="file"
+              accept="video/*"
+              hidden
+            >
           </label>
 
-          <button class="btn btn-secondary" onclick="downloadSRT()">
+          <button
+            id="transcribeButton"
+            class="button button-dark"
+            type="button"
+            onclick="generateAutomaticCaptions()"
+          >
+            Gerar legendas automáticas
+          </button>
+
+          <button
+            class="button button-secondary"
+            type="button"
+            onclick="downloadSRT()"
+          >
             Baixar SRT
           </button>
 
-          <button class="btn btn-primary" onclick="saveProject()">
+          <button
+            class="button button-primary"
+            type="button"
+            onclick="saveProject()"
+          >
             Salvar
           </button>
         </div>
       </header>
 
       <div class="content">
-        <div class="editor">
-          <section class="card">
+        <div class="editor-layout">
+          <section class="card editor-main">
             <div class="preview-area">
-              <div class="video-wrap">
-                <video id="video" controls></video>
-                <div id="caption" class="caption">
+              <div id="videoWrap" class="video-wrap">
+                <video id="video" class="video" controls></video>
+
+                <div id="captionOverlay" class="caption-overlay">
                   Carregue um vídeo para começar
                 </div>
               </div>
             </div>
 
             <div class="transport">
-              <button id="playButton" class="btn btn-dark">Reproduzir</button>
-              <input id="progress" class="progress" type="range" min="0" max="100" value="0">
-              <span id="time">00:00</span>
+              <button
+                id="playButton"
+                class="button button-dark"
+                type="button"
+              >
+                Reproduzir
+              </button>
+
+              <input
+                id="progress"
+                class="progress"
+                type="range"
+                min="0"
+                max="100"
+                value="0"
+              >
+
+              <span id="timeLabel" class="time-label">
+                00:00
+              </span>
             </div>
 
             <div class="timeline">
               <span class="label">Timeline de legendas</span>
+
               <div id="timelineTrack" class="timeline-track"></div>
             </div>
 
-            <div class="section" style="margin-top: 18px;">
+            <div class="caption-editor">
               <span class="label">Legenda selecionada</span>
 
               <textarea id="captionText"></textarea>
 
               <div class="row">
                 <div>
-                  <span class="label">Início</span>
-                  <input id="startTime" class="input" type="number" min="0" step="0.1">
+                  <span class="label">Início, em segundos</span>
+
+                  <input
+                    id="startTime"
+                    class="input"
+                    type="number"
+                    min="0"
+                    step="0.1"
+                  >
                 </div>
 
                 <div>
-                  <span class="label">Fim</span>
-                  <input id="endTime" class="input" type="number" min="0" step="0.1">
+                  <span class="label">Fim, em segundos</span>
+
+                  <input
+                    id="endTime"
+                    class="input"
+                    type="number"
+                    min="0"
+                    step="0.1"
+                  >
                 </div>
               </div>
 
-              <button class="btn btn-primary" style="margin-top: 10px;" onclick="applyCaption()">
-                Aplicar alteração
-              </button>
+              <div class="topbar-actions" style="margin-top: 10px;">
+                <button
+                  class="button button-primary"
+                  type="button"
+                  onclick="applyCaption()"
+                >
+                  Aplicar alteração
+                </button>
+
+                <button
+                  class="button button-secondary"
+                  type="button"
+                  onclick="addCaptionBlock()"
+                >
+                  Adicionar bloco
+                </button>
+
+                <button
+                  class="button button-danger"
+                  type="button"
+                  onclick="deleteCaptionBlock()"
+                >
+                  Excluir bloco
+                </button>
+              </div>
             </div>
 
-            <div id="status" class="status">
+            <p id="status" class="status">
               Nenhum vídeo carregado.
+            </p>
+
+            <div class="notice">
+              A transcrição acontece localmente no seu navegador. Na primeira
+              utilização, o modelo Whisper será baixado e poderá demorar.
             </div>
           </section>
 
@@ -450,9 +706,17 @@
             <div class="section">
               <span class="label">Formato do preview</span>
 
-              <select id="aspectRatio" onchange="changeAspectRatio()">
-                <option value="horizontal">Horizontal 16:9</option>
-                <option value="vertical">Vertical 9:16</option>
+              <select
+                id="aspectRatio"
+                onchange="changeAspectRatio()"
+              >
+                <option value="horizontal">
+                  Horizontal 16:9
+                </option>
+
+                <option value="vertical">
+                  Vertical 9:16
+                </option>
               </select>
             </div>
 
@@ -460,19 +724,63 @@
               <span class="label">Estilo da legenda</span>
 
               <div class="style-grid">
-                <button class="style selected" data-style="clean">Clean</button>
-                <button class="style" data-style="highlight">Highlight</button>
-                <button class="style" data-style="karaoke">Karaokê</button>
-                <button class="style" data-style="impact">Impacto</button>
-                <button class="style" data-style="social">Social</button>
-                <button class="style" data-style="brand">Brand</button>
+                <button
+                  class="style-button selected"
+                  data-style="clean"
+                  type="button"
+                >
+                  Clean
+                </button>
+
+                <button
+                  class="style-button"
+                  data-style="highlight"
+                  type="button"
+                >
+                  Highlight
+                </button>
+
+                <button
+                  class="style-button"
+                  data-style="karaoke"
+                  type="button"
+                >
+                  Karaokê
+                </button>
+
+                <button
+                  class="style-button"
+                  data-style="impact"
+                  type="button"
+                >
+                  Impacto
+                </button>
+
+                <button
+                  class="style-button"
+                  data-style="social"
+                  type="button"
+                >
+                  Social
+                </button>
+
+                <button
+                  class="style-button"
+                  data-style="brand"
+                  type="button"
+                >
+                  Brand
+                </button>
               </div>
             </div>
 
             <div class="section">
               <span class="label">Tipografia</span>
 
-              <select id="fontSelect" onchange="changeFont()">
+              <select
+                id="fontSelect"
+                onchange="changeFont()"
+              >
                 <option value="Arial">Arial</option>
                 <option value="Verdana">Verdana</option>
                 <option value="Georgia">Georgia</option>
@@ -480,13 +788,19 @@
               </select>
 
               <div class="row">
-                <select id="fontWeight" onchange="changeFont()">
+                <select
+                  id="fontWeight"
+                  onchange="changeFont()"
+                >
                   <option value="400">Regular</option>
                   <option value="700" selected>Bold</option>
                   <option value="900">Black</option>
                 </select>
 
-                <select id="fontSize" onchange="changeFont()">
+                <select
+                  id="fontSize"
+                  onchange="changeFont()"
+                >
                   <option value="24">24 px</option>
                   <option value="34" selected>34 px</option>
                   <option value="48">48 px</option>
@@ -495,30 +809,96 @@
               </div>
 
               <div class="row">
-                <input id="textColor" type="color" value="#ffffff" onchange="changeFont()">
-                <input id="activeColor" type="color" value="#ffd21f" onchange="changeFont()">
+                <div>
+                  <span class="label">Cor do texto</span>
+
+                  <input
+                    id="textColor"
+                    class="input"
+                    type="color"
+                    value="#ffffff"
+                    onchange="changeFont()"
+                  >
+                </div>
+
+                <div>
+                  <span class="label">Cor da palavra ativa</span>
+
+                  <input
+                    id="activeColor"
+                    class="input"
+                    type="color"
+                    value="#ffd21f"
+                    onchange="changeFont()"
+                  >
+                </div>
+              </div>
+
+              <div class="row">
+                <div>
+                  <span class="label">Posição vertical</span>
+
+                  <select
+                    id="captionPosition"
+                    onchange="changeCaptionPosition()"
+                  >
+                    <option value="bottom">Inferior</option>
+                    <option value="center">Centro</option>
+                    <option value="top">Superior</option>
+                  </select>
+                </div>
+
+                <div>
+                  <span class="label">Alinhamento</span>
+
+                  <select
+                    id="captionAlign"
+                    onchange="changeCaptionAlign()"
+                  >
+                    <option value="center">Centro</option>
+                    <option value="left">Esquerda</option>
+                    <option value="right">Direita</option>
+                  </select>
+                </div>
               </div>
             </div>
 
-            <div class="section">
+            <div id="fontLibrarySection" class="section">
               <span class="label">Fonte do cliente</span>
 
-              <input id="fontFile" class="input" type="file" accept=".ttf,.otf,.woff,.woff2">
+              <input
+                id="fontFile"
+                class="input"
+                type="file"
+                accept=".ttf,.otf,.woff,.woff2"
+              >
 
               <div id="fontList" class="font-list"></div>
             </div>
 
             <div class="section">
-              <span class="label">Idioma</span>
+              <span class="label">Idioma da transcrição</span>
 
               <select id="language">
-                <option value="pt">Português</option>
-                <option value="en">Inglês</option>
-                <option value="es">Espanhol</option>
+                <option value="auto">
+                  Detectar automaticamente
+                </option>
+
+                <option value="pt">
+                  Português
+                </option>
+
+                <option value="en">
+                  Inglês
+                </option>
+
+                <option value="es">
+                  Espanhol
+                </option>
               </select>
 
               <p class="status">
-                A transcrição automática será conectada na próxima versão.
+                Escolha o idioma antes de iniciar a transcrição.
               </p>
             </div>
           </aside>
@@ -527,212 +907,449 @@
     </main>
   </div>
 
-  <script>
+  <script type="module">
+    import {
+      env,
+      pipeline
+    } from "https://cdn.jsdelivr.net/npm/@huggingface/transformers@3.8.1";
+
+    env.allowLocalModels = false;
+    env.useBrowserCache = true;
+
+    const videoInput = document.getElementById("videoInput");
     const video = document.getElementById("video");
-    const caption = document.getElementById("caption");
-    const progress = document.getElementById("progress");
-    const timeLabel = document.getElementById("time");
-    const playButton = document.getElementById("playButton");
+    const videoWrap = document.getElementById("videoWrap");
+    const captionOverlay = document.getElementById("captionOverlay");
     const timelineTrack = document.getElementById("timelineTrack");
     const captionText = document.getElementById("captionText");
-    const startTime = document.getElementById("startTime");
-    const endTime = document.getElementById("endTime");
-    const statusText = document.getElementById("status");
+    const startTimeInput = document.getElementById("startTime");
+    const endTimeInput = document.getElementById("endTime");
+    const progress = document.getElementById("progress");
+    const timeLabel = document.getElementById("timeLabel");
+    const playButton = document.getElementById("playButton");
+    const statusElement = document.getElementById("status");
+    const transcribeButton = document.getElementById("transcribeButton");
     const fontList = document.getElementById("fontList");
+    const fontFile = document.getElementById("fontFile");
+    const fontSelect = document.getElementById("fontSelect");
+    const activeColor = document.getElementById("activeColor");
+    const textColor = document.getElementById("textColor");
 
+    let transcriber = null;
+    let videoUrl = "";
     let selectedCaption = 0;
     let selectedStyle = "clean";
-    let videoUrl = "";
+    let customFonts = [];
 
     let captions = [
       {
-        text: "Essa é a sua nova campanha",
+        text: "Carregue um vídeo para gerar legendas",
         start: 0,
-        end: 2.4
-      },
-      {
-        text: "Feita para chamar atenção",
-        start: 2.4,
-        end: 5.5
-      },
-      {
-        text: "Conheça agora",
-        start: 5.5,
-        end: 8
+        end: 3,
+        words: []
       }
     ];
 
-    function formatTime(seconds) {
-      seconds = Math.max(0, Number(seconds) || 0);
-      const minutes = Math.floor(seconds / 60);
-      const secs = Math.floor(seconds % 60);
+    function setStatus(message, type = "") {
+      statusElement.textContent = message;
+      statusElement.className = "status " + type;
+    }
 
-      return String(minutes).padStart(2, "0") + ":" +
-        String(secs).padStart(2, "0");
+    function formatTime(seconds) {
+      const value = Math.max(0, Number(seconds) || 0);
+      const minutes = Math.floor(value / 60);
+      const secondsPart = Math.floor(value % 60);
+
+      return String(minutes).padStart(2, "0") +
+        ":" +
+        String(secondsPart).padStart(2, "0");
+    }
+
+    function formatLongTime(seconds) {
+      const value = Math.max(0, Number(seconds) || 0);
+      const hours = Math.floor(value / 3600);
+      const minutes = Math.floor((value % 3600) / 60);
+      const secondsPart = Math.floor(value % 60);
+      const milliseconds = Math.floor((value % 1) * 1000);
+
+      return [
+        String(hours).padStart(2, "0"),
+        String(minutes).padStart(2, "0"),
+        String(secondsPart).padStart(2, "0")
+      ].join(":") + "," + String(milliseconds).padStart(3, "0");
     }
 
     function renderTimeline() {
       timelineTrack.innerHTML = "";
 
+      if (!captions.length) {
+        timelineTrack.innerHTML =
+          "<div class='empty-state'>Nenhuma legenda criada.</div>";
+
+        return;
+      }
+
       captions.forEach((item, index) => {
         const button = document.createElement("button");
+        button.type = "button";
         button.className = "timeline-item";
-        button.textContent = item.text;
-
-        const small = document.createElement("small");
-        small.textContent = formatTime(item.start) + " até " + formatTime(item.end);
-
-        button.appendChild(small);
 
         if (index === selectedCaption) {
           button.classList.add("active");
         }
 
-        button.onclick = () => {
+        const title = document.createElement("span");
+        title.className = "timeline-item-title";
+        title.textContent = item.text || "Legenda vazia";
+
+        const time = document.createElement("span");
+        time.className = "timeline-item-time";
+        time.textContent =
+          formatTime(item.start) +
+          " até " +
+          formatTime(item.end);
+
+        button.appendChild(title);
+        button.appendChild(time);
+
+        button.addEventListener("click", () => {
           selectedCaption = index;
           loadSelectedCaption();
           renderTimeline();
-          video.currentTime = captions[index].start;
-        };
+
+          if (Number.isFinite(item.start)) {
+            video.currentTime = item.start;
+          }
+
+          updateCaptionOverlay();
+        });
 
         timelineTrack.appendChild(button);
       });
     }
 
     function loadSelectedCaption() {
+      if (!captions[selectedCaption]) {
+        return;
+      }
+
       const item = captions[selectedCaption];
 
-      captionText.value = item.text;
-      startTime.value = item.start;
-      endTime.value = item.end;
+      captionText.value = item.text || "";
+      startTimeInput.value = Number(item.start || 0).toFixed(2);
+      endTimeInput.value = Number(item.end || 0).toFixed(2);
     }
 
     function applyCaption() {
-      const item = captions[selectedCaption];
+      if (!captions[selectedCaption]) {
+        return;
+      }
 
-      item.text = captionText.value;
-      item.start = Number(startTime.value);
-      item.end = Number(endTime.value);
+      const text = captionText.value.trim();
+      const start = Number(startTimeInput.value);
+      const end = Number(endTimeInput.value);
 
-      if (item.end <= item.start) {
+      if (!text) {
+        alert("Digite um texto para a legenda.");
+        return;
+      }
+
+      if (!Number.isFinite(start) || !Number.isFinite(end)) {
+        alert("Informe tempos válidos.");
+        return;
+      }
+
+      if (end <= start) {
         alert("O tempo final precisa ser maior que o tempo inicial.");
         return;
       }
 
+      captions[selectedCaption].text = text;
+      captions[selectedCaption].start = start;
+      captions[selectedCaption].end = end;
+      captions[selectedCaption].words = [];
+
       renderTimeline();
-      updateCaption();
+      updateCaptionOverlay();
       saveProject();
+
+      setStatus("Legenda atualizada.", "success");
     }
 
-    function updateCaption() {
-      const currentTime = video.currentTime || 0;
+    function addCaptionBlock() {
+      const lastCaption = captions[captions.length - 1];
+      const start = lastCaption
+        ? Number(lastCaption.end) + 0.1
+        : 0;
 
-      const activeIndex = captions.findIndex(item => {
-        return currentTime >= item.start && currentTime <= item.end;
+      const end = start + 2;
+
+      captions.push({
+        text: "Nova legenda",
+        start,
+        end,
+        words: []
       });
 
-      document.querySelectorAll(".timeline-item").forEach((item, index) => {
-        item.classList.toggle("active", index === activeIndex);
-      });
+      selectedCaption = captions.length - 1;
 
-      if (activeIndex === -1) {
-        caption.textContent = "";
+      renderTimeline();
+      loadSelectedCaption();
+      updateCaptionOverlay();
+
+      setStatus("Novo bloco adicionado.");
+    }
+
+    function deleteCaptionBlock() {
+      if (!captions.length) {
         return;
       }
 
-      const text = captions[activeIndex].text;
+      const confirmed = confirm(
+        "Excluir a legenda selecionada?"
+      );
 
-      if (selectedStyle === "highlight" || selectedStyle === "karaoke") {
-        const words = text.split(" ");
-        const progressRatio =
-          (currentTime - captions[activeIndex].start) /
-          (captions[activeIndex].end - captions[activeIndex].start);
+      if (!confirmed) {
+        return;
+      }
 
-        const activeWord = Math.min(
-          words.length - 1,
-          Math.floor(progressRatio * words.length)
-        );
+      captions.splice(selectedCaption, 1);
 
-        caption.innerHTML = words.map((word, index) => {
-          return index === activeWord
-            ? "<span class='active-word'>" + word + "</span>"
-            : word;
-        }).join(" ");
+      if (selectedCaption >= captions.length) {
+        selectedCaption = Math.max(0, captions.length - 1);
+      }
+
+      renderTimeline();
+
+      if (captions.length) {
+        loadSelectedCaption();
       } else {
-        caption.textContent = text;
+        captionText.value = "";
+        startTimeInput.value = "";
+        endTimeInput.value = "";
+      }
+
+      updateCaptionOverlay();
+      saveProject();
+      setStatus("Bloco excluído.", "success");
+    }
+
+    function getCurrentCaptionIndex() {
+      const currentTime = video.currentTime || 0;
+
+      return captions.findIndex(item => {
+        return currentTime >= item.start &&
+          currentTime <= item.end;
+      });
+    }
+
+    function getActiveWordIndex(item, currentTime) {
+      if (!item.words || !item.words.length) {
+        const duration = item.end - item.start;
+        const progressValue =
+          duration > 0
+            ? (currentTime - item.start) / duration
+            : 0;
+
+        return Math.min(
+          item.text.split(/\s+/).length - 1,
+          Math.max(0, Math.floor(progressValue * item.text.split(/\s+/).length))
+        );
+      }
+
+      return item.words.findIndex(word => {
+        return currentTime >= word.start &&
+          currentTime <= word.end;
+      });
+    }
+
+    function renderWordHighlight(item, currentTime) {
+      const words = item.words && item.words.length
+        ? item.words
+        : item.text.split(/\s+/).map(word => ({
+          text: word,
+          start: item.start,
+          end: item.end
+        }));
+
+      const activeWordIndex = getActiveWordIndex(
+        item,
+        currentTime
+      );
+
+      return words.map((word, index) => {
+        const safeText = escapeHtml(word.text);
+
+        if (
+          selectedStyle === "highlight" ||
+          selectedStyle === "karaoke"
+        ) {
+          if (index === activeWordIndex) {
+            return "<span class='active-word'>" +
+              safeText +
+              "</span>";
+          }
+        }
+
+        return safeText;
+      }).join(" ");
+    }
+
+    function updateCaptionOverlay() {
+      const activeIndex = getCurrentCaptionIndex();
+
+      document.querySelectorAll(".timeline-item").forEach(
+        (element, index) => {
+          element.classList.toggle(
+            "active",
+            index === activeIndex
+          );
+        }
+      );
+
+      if (activeIndex === -1) {
+        captionOverlay.textContent = "";
+        return;
+      }
+
+      const item = captions[activeIndex];
+
+      if (selectedStyle === "highlight" ||
+        selectedStyle === "karaoke") {
+        captionOverlay.innerHTML =
+          renderWordHighlight(item, video.currentTime);
+      } else {
+        captionOverlay.textContent = item.text;
       }
     }
 
     function applyStyle(style) {
       selectedStyle = style;
 
-      document.querySelectorAll(".style").forEach(button => {
-        button.classList.toggle(
-          "selected",
-          button.dataset.style === style
-        );
-      });
+      document.querySelectorAll(".style-button").forEach(
+        button => {
+          button.classList.toggle(
+            "selected",
+            button.dataset.style === style
+          );
+        }
+      );
 
-      caption.style.textTransform = style === "social"
-        ? "uppercase"
-        : "none";
+      captionOverlay.classList.remove(
+        "style-clean",
+        "style-highlight",
+        "style-karaoke",
+        "style-impact",
+        "style-social",
+        "style-brand"
+      );
 
-      caption.style.fontSize = style === "impact"
-        ? "48px"
-        : "34px";
+      captionOverlay.classList.add("style-" + style);
 
-      caption.style.background = style === "social"
-        ? "rgba(255, 77, 20, .9)"
-        : "transparent";
+      if (style === "social") {
+        captionOverlay.classList.add("uppercase");
+      } else {
+        captionOverlay.classList.remove("uppercase");
+      }
 
-      caption.style.padding = style === "social"
-        ? "8px 12px"
-        : "0";
-
-      updateCaption();
+      updateCaptionOverlay();
+      saveProject();
     }
 
     function changeFont() {
-      caption.style.fontFamily =
-        document.getElementById("fontSelect").value;
-
-      caption.style.fontWeight =
+      captionOverlay.style.fontFamily = fontSelect.value;
+      captionOverlay.style.fontWeight =
         document.getElementById("fontWeight").value;
-
-      caption.style.fontSize =
+      captionOverlay.style.fontSize =
         document.getElementById("fontSize").value + "px";
-
-      caption.style.color =
-        document.getElementById("textColor").value;
+      captionOverlay.style.color = textColor.value;
 
       document.documentElement.style.setProperty(
-        "--active-color",
-        document.getElementById("activeColor").value
+        "--active-word",
+        activeColor.value
       );
+
+      updateCaptionOverlay();
+      saveProject();
+    }
+
+    function changeCaptionPosition() {
+      const value =
+        document.getElementById("captionPosition").value;
+
+      captionOverlay.style.top = "";
+      captionOverlay.style.bottom = "";
+
+      if (value === "top") {
+        captionOverlay.style.top = "8%";
+        captionOverlay.style.bottom = "auto";
+      }
+
+      if (value === "center") {
+        captionOverlay.style.top = "50%";
+        captionOverlay.style.bottom = "auto";
+        captionOverlay.style.transform = "translateY(-50%)";
+      }
+
+      if (value === "bottom") {
+        captionOverlay.style.top = "auto";
+        captionOverlay.style.bottom = "8%";
+        captionOverlay.style.transform = "none";
+      }
+
+      saveProject();
+    }
+
+    function changeCaptionAlign() {
+      const value =
+        document.getElementById("captionAlign").value;
+
+      captionOverlay.style.textAlign = value;
+      saveProject();
     }
 
     function changeAspectRatio() {
-      const ratio = document.getElementById("aspectRatio").value;
+      const value =
+        document.getElementById("aspectRatio").value;
 
-      video.style.aspectRatio = ratio === "vertical"
-        ? "9 / 16"
-        : "16 / 9";
+      videoWrap.classList.toggle(
+        "vertical",
+        value === "vertical"
+      );
+
+      if (value === "vertical") {
+        video.style.aspectRatio = "9 / 16";
+      } else {
+        video.style.aspectRatio = "16 / 9";
+      }
 
       video.style.objectFit = "contain";
+      saveProject();
     }
 
-    function showFonts() {
-      alert("A biblioteca de fontes está disponível no painel lateral.");
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
     }
 
     function saveProject() {
       const project = {
         captions,
-        selectedStyle,
         selectedCaption,
+        selectedStyle,
         language: document.getElementById("language").value,
         aspectRatio: document.getElementById("aspectRatio").value,
-        font: document.getElementById("fontSelect").value,
+        font: fontSelect.value,
+        fontWeight: document.getElementById("fontWeight").value,
+        fontSize: document.getElementById("fontSize").value,
+        textColor: textColor.value,
+        activeColor: activeColor.value,
+        captionPosition: document.getElementById("captionPosition").value,
+        captionAlign: document.getElementById("captionAlign").value,
         savedAt: new Date().toISOString()
       };
 
@@ -741,85 +1358,452 @@
         JSON.stringify(project)
       );
 
-      statusText.textContent =
-        "Projeto salvo neste navegador.";
+      setStatus(
+        "Projeto salvo neste navegador.",
+        "success"
+      );
     }
 
     function loadProject() {
-      const saved = localStorage.getItem("caption-studio-project");
+      const saved = localStorage.getItem(
+        "caption-studio-project"
+      );
 
       if (!saved) {
         renderTimeline();
         loadSelectedCaption();
+        changeAspectRatio();
+        applyStyle(selectedStyle);
+        changeFont();
         return;
       }
 
       try {
         const project = JSON.parse(saved);
 
-        captions = project.captions || captions;
-        selectedStyle = project.selectedStyle || "clean";
-        selectedCaption = project.selectedCaption || 0;
+        if (Array.isArray(project.captions)) {
+          captions = project.captions;
+        }
+
+        selectedCaption =
+          Number(project.selectedCaption || 0);
+
+        selectedStyle =
+          project.selectedStyle || "clean";
 
         document.getElementById("language").value =
-          project.language || "pt";
+          project.language || "auto";
 
         document.getElementById("aspectRatio").value =
           project.aspectRatio || "horizontal";
 
-        document.getElementById("fontSelect").value =
-          project.font || "Arial";
+        if (project.font) {
+          fontSelect.value = project.font;
+        }
+
+        if (project.fontWeight) {
+          document.getElementById("fontWeight").value =
+            project.fontWeight;
+        }
+
+        if (project.fontSize) {
+          document.getElementById("fontSize").value =
+            project.fontSize;
+        }
+
+        if (project.textColor) {
+          textColor.value = project.textColor;
+        }
+
+        if (project.activeColor) {
+          activeColor.value = project.activeColor;
+        }
+
+        if (project.captionPosition) {
+          document.getElementById("captionPosition").value =
+            project.captionPosition;
+        }
+
+        if (project.captionAlign) {
+          document.getElementById("captionAlign").value =
+            project.captionAlign;
+        }
 
         renderTimeline();
         loadSelectedCaption();
+        changeAspectRatio();
         applyStyle(selectedStyle);
         changeFont();
-        changeAspectRatio();
+        changeCaptionPosition();
+        changeCaptionAlign();
 
-        statusText.textContent =
-          "Projeto recuperado do armazenamento local.";
-      } catch {
+        setStatus(
+          "Projeto recuperado deste navegador.",
+          "success"
+        );
+      } catch (error) {
+        console.error(error);
+
         renderTimeline();
         loadSelectedCaption();
+        setStatus(
+          "Não foi possível recuperar o projeto salvo.",
+          "error"
+        );
       }
     }
 
-    function toSRTTime(seconds) {
-      const hours = Math.floor(seconds / 3600);
-      const minutes = Math.floor((seconds % 3600) / 60);
-      const secs = Math.floor(seconds % 60);
-      const ms = Math.floor((seconds % 1) * 1000);
-
-      return [
-        String(hours).padStart(2, "0"),
-        String(minutes).padStart(2, "0"),
-        String(secs).padStart(2, "0")
-      ].join(":") + "," + String(ms).padStart(3, "0");
-    }
-
     function downloadSRT() {
+      if (!captions.length) {
+        alert("Não há legendas para exportar.");
+        return;
+      }
+
       const content = captions.map((item, index) => {
         return [
           index + 1,
-          toSRTTime(item.start) + " --> " + toSRTTime(item.end),
+          getSRTTime(item.start) +
+            " --> " +
+            getSRTTime(item.end),
           item.text,
           ""
         ].join("\n");
       }).join("\n");
 
-      const blob = new Blob([content], {
-        type: "text/plain;charset=utf-8"
-      });
+      const blob = new Blob(
+        [content],
+        { type: "text/plain;charset=utf-8" }
+      );
 
+      const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = "legendas.srt";
-      link.click();
 
-      URL.revokeObjectURL(link.href);
+      link.href = url;
+      link.download = "legendas.srt";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      URL.revokeObjectURL(url);
+
+      setStatus(
+        "Arquivo SRT baixado.",
+        "success"
+      );
     }
 
-    document.getElementById("videoInput").addEventListener("change", event => {
+    function getSRTTime(seconds) {
+      const value = Math.max(0, Number(seconds) || 0);
+      const hours = Math.floor(value / 3600);
+      const minutes = Math.floor((value % 3600) / 60);
+      const secondsPart = Math.floor(value % 60);
+      const milliseconds = Math.floor((value % 1) * 1000);
+
+      return [
+        String(hours).padStart(2, "0"),
+        String(minutes).padStart(2, "0"),
+        String(secondsPart).padStart(2, "0")
+      ].join(":") +
+        "," +
+        String(milliseconds).padStart(3, "0");
+    }
+
+    function focusFontLibrary() {
+      document.getElementById(
+        "fontLibrarySection"
+      ).scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+    }
+
+    function addFontOption(name, family) {
+      const option = document.createElement("option");
+
+      option.value = family;
+      option.textContent = name;
+
+      fontSelect.appendChild(option);
+
+      const item = document.createElement("div");
+      item.className = "font-item";
+
+      const info = document.createElement("div");
+
+      const nameElement = document.createElement("div");
+      nameElement.className = "font-item-name";
+      nameElement.textContent = name;
+
+      const statusElement = document.createElement("div");
+      statusElement.className = "font-item-status";
+      statusElement.textContent = "Carregada neste navegador";
+
+      info.appendChild(nameElement);
+      info.appendChild(statusElement);
+
+      const useButton = document.createElement("button");
+      useButton.type = "button";
+      useButton.className = "button button-dark";
+      useButton.textContent = "Usar";
+
+      useButton.addEventListener("click", () => {
+        fontSelect.value = family;
+        changeFont();
+      });
+
+      item.appendChild(info);
+      item.appendChild(useButton);
+      fontList.appendChild(item);
+    }
+
+    async function extractAudioFromVideo(file) {
+      const arrayBuffer = await file.arrayBuffer();
+
+      try {
+        const audioContext = new AudioContext();
+        const audioBuffer =
+          await audioContext.decodeAudioData(arrayBuffer);
+
+        const targetSampleRate = 16000;
+        const targetLength =
+          Math.ceil(audioBuffer.duration * targetSampleRate);
+
+        const offlineContext = new OfflineAudioContext(
+          1,
+          targetLength,
+          targetSampleRate
+        );
+
+        const source =
+          offlineContext.createBufferSource();
+
+        source.buffer = audioBuffer;
+        source.connect(offlineContext.destination);
+        source.start(0);
+
+        const rendered =
+          await offlineContext.startRendering();
+
+        await audioContext.close();
+
+        return rendered.getChannelData(0);
+      } catch (error) {
+        throw new Error(
+          "O navegador não conseguiu extrair o áudio deste vídeo."
+        );
+      }
+    }
+
+    function normalizeTimestamp(timestamp) {
+      if (Array.isArray(timestamp)) {
+        return {
+          start: Number(timestamp[0]) || 0,
+          end: Number(timestamp[1]) || 0
+        };
+      }
+
+      return {
+        start: 0,
+        end: 0
+      };
+    }
+
+    function groupWordChunks(chunks) {
+      const blocks = [];
+      let currentWords = [];
+      let blockStart = null;
+      let previousEnd = null;
+
+      const maxWords = 6;
+      const maxCharacters = 36;
+      const maxGap = 0.8;
+
+      for (const chunk of chunks) {
+        const text = String(chunk.text || "").trim();
+
+        if (!text) {
+          continue;
+        }
+
+        const timestamp =
+          normalizeTimestamp(chunk.timestamp);
+
+        const wordStart = timestamp.start;
+        const wordEnd =
+          timestamp.end > wordStart
+            ? timestamp.end
+            : wordStart + 0.35;
+
+        if (blockStart === null) {
+          blockStart = wordStart;
+        }
+
+        const nextWords = [
+          ...currentWords,
+          {
+            text,
+            start: wordStart,
+            end: wordEnd
+          }
+        ];
+
+        const nextText = nextWords
+          .map(word => word.text)
+          .join(" ");
+
+        const gap = previousEnd === null
+          ? 0
+          : wordStart - previousEnd;
+
+        const shouldCloseBlock =
+          currentWords.length >= maxWords ||
+          nextText.length > maxCharacters ||
+          gap > maxGap;
+
+        if (shouldCloseBlock && currentWords.length) {
+          blocks.push({
+            text: currentWords
+              .map(word => word.text)
+              .join(" "),
+            start: blockStart,
+            end: previousEnd || wordEnd,
+            words: currentWords
+          });
+
+          currentWords = [
+            {
+              text,
+              start: wordStart,
+              end: wordEnd
+            }
+          ];
+
+          blockStart = wordStart;
+        } else {
+          currentWords = nextWords;
+        }
+
+        previousEnd = wordEnd;
+      }
+
+      if (currentWords.length) {
+        blocks.push({
+          text: currentWords
+            .map(word => word.text)
+            .join(" "),
+          start: blockStart || 0,
+          end: previousEnd || 0,
+          words: currentWords
+        });
+      }
+
+      return blocks;
+    }
+
+    async function getTranscriber() {
+      if (transcriber) {
+        return transcriber;
+      }
+
+      setStatus(
+        "Baixando o modelo Whisper. Na primeira vez pode demorar..."
+      );
+
+      transcriber = await pipeline(
+        "automatic-speech-recognition",
+        "Xenova/whisper-tiny",
+        {
+          dtype: "q8"
+        }
+      );
+
+      return transcriber;
+    }
+
+    async function generateAutomaticCaptions() {
+      const file = videoInput.files[0];
+
+      if (!file) {
+        alert("Carregue um vídeo antes de gerar as legendas.");
+        return;
+      }
+
+      transcribeButton.disabled = true;
+      transcribeButton.textContent = "Transcrevendo...";
+      setStatus("Preparando o áudio...");
+
+      try {
+        const audio = await extractAudioFromVideo(file);
+        const model = await getTranscriber();
+
+        const language =
+          document.getElementById("language").value;
+
+        const options = {
+          return_timestamps: "word",
+          chunk_length_s: 30,
+          stride_length_s: 5
+        };
+
+        if (language !== "auto") {
+          options.language = language;
+          options.task = "transcribe";
+        }
+
+        setStatus(
+          "Transcrevendo localmente. Não feche esta aba..."
+        );
+
+        const result = await model(audio, options);
+
+        if (!result || !result.chunks) {
+          throw new Error(
+            "O modelo não retornou segmentos."
+          );
+        }
+
+        const generatedCaptions =
+          groupWordChunks(result.chunks);
+
+        if (!generatedCaptions.length) {
+          throw new Error(
+            "Nenhuma fala foi identificada."
+          );
+        }
+
+        captions = generatedCaptions;
+        selectedCaption = 0;
+
+        renderTimeline();
+        loadSelectedCaption();
+        updateCaptionOverlay();
+        saveProject();
+
+        setStatus(
+          "Legendas geradas com sucesso: " +
+          generatedCaptions.length +
+          " blocos.",
+          "success"
+        );
+      } catch (error) {
+        console.error(error);
+
+        setStatus(
+          "A transcrição não pôde ser concluída.",
+          "error"
+        );
+
+        alert(
+          "Não foi possível gerar as legendas. Verifique se o vídeo tem áudio e tente novamente no Chrome ou Edge."
+        );
+      } finally {
+        transcribeButton.disabled = false;
+        transcribeButton.textContent =
+          "Gerar legendas automáticas";
+      }
+    }
+
+    videoInput.addEventListener("change", event => {
       const file = event.target.files[0];
 
       if (!file) {
@@ -832,47 +1816,62 @@
 
       videoUrl = URL.createObjectURL(file);
       video.src = videoUrl;
-      statusText.textContent = "Vídeo carregado: " + file.name;
+      video.load();
+
+      setStatus(
+        "Vídeo carregado: " + file.name,
+        "success"
+      );
     });
 
-    document.getElementById("fontFile").addEventListener("change", event => {
+    fontFile.addEventListener("change", event => {
       const file = event.target.files[0];
 
       if (!file) {
         return;
       }
 
-      const fontName = "ClientFont" + Date.now();
-      const fontUrl = URL.createObjectURL(file);
+      const family =
+        "ClientFont" + Date.now();
+
+      const fontUrl =
+        URL.createObjectURL(file);
 
       const style = document.createElement("style");
+
       style.textContent =
-        "@font-face { font-family: '" + fontName + "'; src: url('" +
-        fontUrl + "'); }";
+        "@font-face {" +
+        "font-family: '" + family + "';" +
+        "src: url('" + fontUrl + "');" +
+        "font-display: swap;" +
+        "}";
 
       document.head.appendChild(style);
 
-      const option = document.createElement("option");
-      option.value = fontName;
-      option.textContent = file.name;
+      customFonts.push({
+        name: file.name,
+        family,
+        url: fontUrl
+      });
 
-      document.getElementById("fontSelect").appendChild(option);
-      document.getElementById("fontSelect").value = fontName;
+      addFontOption(file.name, family);
 
+      fontSelect.value = family;
       changeFont();
 
-      const item = document.createElement("div");
-      item.className = "font-item";
-      item.innerHTML =
-        "<span>" + file.name + "</span><small>Carregada localmente</small>";
-
-      fontList.appendChild(item);
-
-      statusText.textContent =
-        "Fonte carregada apenas neste navegador.";
+      setStatus(
+        "Fonte carregada neste navegador: " +
+        file.name,
+        "success"
+      );
     });
 
     playButton.addEventListener("click", () => {
+      if (!video.src) {
+        alert("Carregue um vídeo primeiro.");
+        return;
+      }
+
       if (video.paused) {
         video.play();
         playButton.textContent = "Pausar";
@@ -884,25 +1883,72 @@
 
     video.addEventListener("timeupdate", () => {
       if (video.duration) {
-        progress.value = (video.currentTime / video.duration) * 100;
+        progress.value =
+          (video.currentTime / video.duration) * 100;
       }
 
-      timeLabel.textContent = formatTime(video.currentTime);
-      updateCaption();
+      timeLabel.textContent =
+        formatTime(video.currentTime);
+
+      updateCaptionOverlay();
+    });
+
+    video.addEventListener("ended", () => {
+      playButton.textContent = "Reproduzir";
     });
 
     progress.addEventListener("input", () => {
-      if (video.duration) {
-        video.currentTime =
-          (Number(progress.value) / 100) * video.duration;
+      if (!video.duration) {
+        return;
       }
+
+      video.currentTime =
+        (Number(progress.value) / 100) *
+        video.duration;
+
+      updateCaptionOverlay();
     });
 
-    document.querySelectorAll(".style").forEach(button => {
-      button.addEventListener("click", () => {
-        applyStyle(button.dataset.style);
-      });
-    });
+    document.querySelectorAll(".style-button").forEach(
+      button => {
+        button.addEventListener("click", () => {
+          applyStyle(button.dataset.style);
+        });
+      }
+    );
+
+    window.generateAutomaticCaptions =
+      generateAutomaticCaptions;
+
+    window.applyCaption =
+      applyCaption;
+
+    window.addCaptionBlock =
+      addCaptionBlock;
+
+    window.deleteCaptionBlock =
+      deleteCaptionBlock;
+
+    window.changeFont =
+      changeFont;
+
+    window.changeAspectRatio =
+      changeAspectRatio;
+
+    window.changeCaptionPosition =
+      changeCaptionPosition;
+
+    window.changeCaptionAlign =
+      changeCaptionAlign;
+
+    window.downloadSRT =
+      downloadSRT;
+
+    window.saveProject =
+      saveProject;
+
+    window.focusFontLibrary =
+      focusFontLibrary;
 
     loadProject();
   </script>
